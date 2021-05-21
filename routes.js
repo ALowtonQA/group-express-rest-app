@@ -15,7 +15,8 @@ ROUTER.post("/create", async(req, res) => {
         await DOC.save();
         res.status(201).send(NEW_OBJ)
     } catch(err) {
-        console.log(err.message);
+        console.log(err.stack);
+        res.status(500).send(err.message);
     }
 });
 
@@ -25,7 +26,23 @@ ROUTER.get("/getAll", async(req, res) => {
         const PRODUCTS = await PRODUCT.find();
         res.send(PRODUCTS);
     } catch(err) {
+        console.log(err.stack);
+        res.status(500).send(err.message);
+    }
+});
+
+// Put Requests - Ryan Glennerster
+ROUTER.put("/update/:id", async(req, res) => {
+    try{
+        const UPDATED = await PRODUCT.findByIdAndUpdate(
+            {_id: req.params.id}, 
+            {name: req.query.name},
+            {new: true}
+        )
+        res.status(202).send(UPDATED);
+    } catch(err) {
         console.log(err.message);
+        res.status(404).send(err.message);
     }
 });
 
