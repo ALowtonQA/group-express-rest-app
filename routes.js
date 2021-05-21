@@ -23,7 +23,8 @@ ROUTER.post("/create", async(req, res) => {
 ROUTER.get("/getAll", async(req, res) => {
     try {
         const PRODUCTS = await PRODUCT.find();
-        (PRODUCTS.length)? res.send(PRODUCTS) : res.status(500).send("No products to retrieve");
+        if (PRODUCTS.length) res.send(PRODUCTS);
+        res.status(500).send("No products to retrieve");
     } catch(err) {
         console.log(err.stack);
         res.status(500).send(err.message);
