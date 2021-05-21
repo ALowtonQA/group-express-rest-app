@@ -37,6 +37,7 @@ ROUTER.get("/get/:id", async(req, res) => {
         res.send(FOUND);
     } catch(err) {
         console.log(err.message);
+        res.status(500).send("Cannot find a product with that ID!");
     }
 });
 
@@ -51,7 +52,7 @@ ROUTER.put("/update/:id", async(req, res) => {
         res.status(202).send(UPDATED);
     } catch(err) {
         console.log(err.stack);
-        res.status(404).send(err.message);
+        res.status(404).send("Cannot find a product with that ID!");
     }
 });
 
@@ -62,7 +63,7 @@ ROUTER.delete("/delete/:id", async(req, res) => {
         res.status(204).send();
     } catch(err) {
         console.log(err.stack);
-        res.status(404).send(err.message);
+        res.status(404).send("Cannot find a product with that ID!");
     }
 });
 
