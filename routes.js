@@ -3,7 +3,6 @@
 const ROUTER = require("express").Router();
 const PRODUCT = require("./models/product");
 
-
 // Post Requests
 ROUTER.post("/create", async(req, res) => {
     const NEW_OBJ = {
@@ -20,7 +19,7 @@ ROUTER.post("/create", async(req, res) => {
     }
 });
 
-// Get Requests (200 is default HTTP status code)
+// Get All (200 is default HTTP status code)
 ROUTER.get("/getAll", async(req, res) => {
     try {
         const PRODUCTS = await PRODUCT.find();
@@ -31,17 +30,38 @@ ROUTER.get("/getAll", async(req, res) => {
     }
 });
 
-// Put Requests - Ryan Glennerster
+// Get by ID - Dinesh
+ROUTER.get("/get/:id", async(req, res) => {
+    try {
+        const FOUND = await PRODUCT.findById(req.params.id);
+        res.send(FOUND);
+    } catch(err) {
+        console.log(err.message);
+    }
+});
+
+// Put Request - Ryan Glennerster
 ROUTER.put("/update/:id", async(req, res) => {
     try{
         const UPDATED = await PRODUCT.findByIdAndUpdate(
             {_id: req.params.id}, 
             {name: req.query.name},
             {new: true}
-        )
+        );
         res.status(202).send(UPDATED);
     } catch(err) {
-        console.log(err.message);
+        console.log(err.stack);
+        res.status(404).send(err.message);
+    }
+});
+
+// Delete Request - Usman
+ROUTER.delete("/delete/:id", async(req, res) => {
+    try {
+        await PRODUCT.findByIdAndDelete(req.params.id);
+        res.status(204).send();
+    } catch(err) {
+        console.log(err.stack);
         res.status(404).send(err.message);
     }
 });
