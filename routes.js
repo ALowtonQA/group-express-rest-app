@@ -23,7 +23,7 @@ ROUTER.post("/create", async(req, res) => {
 ROUTER.get("/getAll", async(req, res) => {
     try {
         const PRODUCTS = await PRODUCT.find();
-        res.send(PRODUCTS);
+        (PRODUCTS.length)? res.send(PRODUCTS) : res.status(500).send("No products to retrieve");
     } catch(err) {
         console.log(err.stack);
         res.status(500).send(err.message);
@@ -34,10 +34,11 @@ ROUTER.get("/getAll", async(req, res) => {
 ROUTER.get("/get/:id", async(req, res) => {
     try {
         const FOUND = await PRODUCT.findById(req.params.id);
-        res.send(FOUND);
+        if (FOUND) res.send(FOUND);
+        res.status(404).send("Cannot find a product with that ID!");
     } catch(err) {
         console.log(err.message);
-        res.status(500).send("Cannot find a product with that ID!");
+        res.status(404).send("Cannot find a product with that ID!");
     }
 });
 
@@ -49,7 +50,8 @@ ROUTER.put("/update/:id", async(req, res) => {
             {name: req.query.name},
             {new: true}
         );
-        res.status(202).send(UPDATED);
+        if (UPDATED) res.status(202).send(UPDATED);
+        res.status(404).send("Cannot find a product with that ID!");
     } catch(err) {
         console.log(err.stack);
         res.status(404).send("Cannot find a product with that ID!");
@@ -59,8 +61,9 @@ ROUTER.put("/update/:id", async(req, res) => {
 // Delete Request - Usman
 ROUTER.delete("/delete/:id", async(req, res) => {
     try {
-        await PRODUCT.findByIdAndDelete(req.params.id);
-        res.status(204).send();
+        const DELETED = await PRODUCT.findByIdAndDelete(req.params.id);
+        if (DELETED) res.status(204).send();
+        res.status(404).send("Cannot find a product with that ID!");
     } catch(err) {
         console.log(err.stack);
         res.status(404).send("Cannot find a product with that ID!");
